@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_search"
+        android:title="@android:string/search_go"
+        android:icon="@drawable/ic_search_black_24dp"
+        yourapp:showAsAction="always|collapseActionView"
+        yourapp:actionViewClass="android.widget.SearchView" />
+    <item
+        android:id="@+id/action_filter"
+        android:title="Filters"
+        android:icon="@drawable/ic_format_align_justify_black_24dp"
+        yourapp:showAsAction="always" />
+</menu>
