@@ -12,9 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_actionbar"
-        android:padding="5dp">
-
-    </ListView>
+        android:cacheColorHint="@color/dividerColor"
+        android:padding="5dp" />
 
     <Button
         android:id="@+id/add"

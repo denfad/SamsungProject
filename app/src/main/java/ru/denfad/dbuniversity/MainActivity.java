@@ -2,13 +2,16 @@ package ru.denfad.dbuniversity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +35,7 @@ import ru.denfad.dbuniversity.DAO.DbService;
 import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.Student;
 
-public class MainActivity extends AppCompatActivity {
+public class                    MainActivity extends AppCompatActivity {
 
     public ListView listView;
     public List<Group> groups = new ArrayList<>();
@@ -122,11 +125,47 @@ public class MainActivity extends AppCompatActivity {
             GroupHolder holder = new GroupHolder();
             holder.group_id= convertView.findViewById(R.id.group);
             holder.faculty = convertView.findViewById(R.id.faculty_name);
+            holder.delete=convertView.findViewById(R.id.delete_group);
 
+            holder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(dbService.deleteGroup(group.getGroupId())){
+                        Toast.makeText(getApplicationContext(),"Delete group",Toast.LENGTH_SHORT).show();
+                        groups=dbService.getAllGroups();
+                        adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
+                        listView.setAdapter(adapter);
+                    }
+                    else  {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("Удаление группы");
+                        builder.setMessage("Группа не пустая, вы правда хотите удалить ее со студентами?");
+                        builder.setCancelable(true);
+                        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // Кнопка ОК
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dbService.deleteGroupAnyway(group.getGroupId());
+                                groups=dbService.getAllGroups();
+                                adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
+                                listView.setAdapter(adapter);
+                                dialog.dismiss(); // Отпускает диалоговое окно
+                            }
+                        });
+                        builder.setNegativeButton("Отмена",new DialogInterface.OnClickListener() { // Кнопка ОК
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss(); // Отпускает диалоговое окно
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
 
+                }
+            });
 
-            holder.group_id.setText(String.valueOf(group.getGroupId()));
-            holder.faculty.setText(group.getFaculty());
+            holder.group_id.setText("Номер группы: " + String.valueOf(group.getGroupId()));
+            holder.faculty.setText("Факультет: "+group.getFaculty());
             convertView.setTag(holder);
 
             return convertView;
@@ -138,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     private static  class GroupHolder {
         public TextView group_id;
         public TextView faculty;
-
+        public ImageButton delete;
     }
 
     public class StudentsAdapter extends ArrayAdapter<Student> {
@@ -156,15 +195,13 @@ public class MainActivity extends AppCompatActivity {
             convertView = inflater.inflate(R.layout.student_item, null);
 
             StudentHolder holder = new StudentHolder();
-            holder.name= convertView.findViewById(R.id.student_name);
-            holder.secondName = convertView.findViewById(R.id.student_second_name);
-            holder.student_group_id = convertView.findViewById(R.id.student_group_id);
+            holder.fullName= convertView.findViewById(R.id.student_full_name);
+            holder.birthDate = convertView.findViewById(R.id.student_birth_date);
 
 
 
-            holder.name.setText(student.getName());
-            holder.secondName.setText(student.getSecondName());
-            holder.student_group_id.setText(String.valueOf(student.getGroupId()));
+            holder.fullName.setText(student.getName()+" "+student.getSecondName()+" "+student.getMiddleName());
+            holder.birthDate.setText(student.getBirthDate());
             convertView.setTag(holder);
 
             return convertView;
@@ -172,9 +209,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static  class StudentHolder {
-        public TextView name;
-        public TextView secondName;
-        public TextView student_group_id;
+        public TextView fullName;
+        public TextView birthDate;
+
     }
 
 
@@ -188,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_filter:
-                Toast.makeText(this, "You change list", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You change view", Toast.LENGTH_SHORT).show();
                 activeFilter= !activeFilter;
                 changeFilter();
                 break;

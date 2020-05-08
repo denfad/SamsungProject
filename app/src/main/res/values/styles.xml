@@ -9,4 +9,7 @@
 
     </style>
 
+    <style name="myDialog" parent="Theme.AppCompat.Dialog">
+
+    </style>
 </resources>

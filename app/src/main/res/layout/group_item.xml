@@ -1,32 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:descendantFocusability="blocksDescendants">
 
-        <TextView
-            android:id="@+id/group"
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_group_black_24dp"
+            android:layout_marginLeft="5dp"/>
+
+        <LinearLayout
+            android:layout_weight="7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Id группы"
-            android:padding="5dp"
-            android:textSize="24sp" />
+            android:orientation="vertical"
+            android:padding="2dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:gravity="right"
-            android:padding="5dp"
-            android:id="@+id/faculty_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="факультет"
-            android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="Id группы"
+                android:textColor="#212121"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/faculty_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="факультет"
+                android:textColor="#757575"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:elevation="2dp"
+            android:id="@+id/delete_group"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/ring"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_delete_forever_black_24dp" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+

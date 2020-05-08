@@ -2,37 +2,51 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/student_name"
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Имя"
-            android:padding="5dp"
-            android:textSize="24sp" />
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_person_black_24dp" />
 
-        <TextView
-            android:padding="5dp"
-            android:id="@+id/student_second_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_weight="7"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Фамилия"
-            android:textSize="24sp" />
-        <TextView
-            android:padding="5dp"
-            android:id="@+id/student_group_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ID группы"
-            android:textSize="24sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/student_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Имя Фамилия Отчество"
+                android:textColor="@color/mainTextColor"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/student_birth_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Дата рождения"
+                android:textColor="@color/secondTextColor"
+                android:textSize="20sp" />
+
+        </LinearLayout>
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

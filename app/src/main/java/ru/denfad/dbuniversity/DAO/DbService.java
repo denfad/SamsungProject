@@ -49,6 +49,10 @@ public class DbService {
         else return  false;
     }
 
+    public void deleteGroupAnyway(int id){
+        dbWorker.deleteGroup(id);
+    }
+
     public boolean deleteGroup(Group group){
         if(dbFilters.checkIsEmptyGroup(group.getGroupId())){
             dbWorker.deleteGroup(group.getGroupId());

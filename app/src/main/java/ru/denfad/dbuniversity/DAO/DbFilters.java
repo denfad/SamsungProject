@@ -38,7 +38,7 @@ class DbFilters extends DbStructure{
     }
 
     public boolean checkIsEmptyGroup(int group_id){
-        if(selectStudentsByGroup(group_id)==null){
+        if(selectStudentsByGroup(group_id).isEmpty()){
             return true; //return true if group empty
         }
         else return false;

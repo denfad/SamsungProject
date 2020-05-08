@@ -29,14 +29,15 @@ public class StudentsListActivity extends AppCompatActivity {
     public ListView listView;
     public ArrayAdapter adapter;
     public List<Student> students = new ArrayList<>();
-
+    public int group_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.students_list);
         final Intent intent = getIntent();
         dbService=new DbService(getApplicationContext());
-        students = dbService.findStudentsByGroup(intent.getIntExtra("group_id",Integer.MAX_VALUE));
+        group_id = intent.getIntExtra("group_id",Integer.MAX_VALUE);
+        students = dbService.findStudentsByGroup(group_id);
         adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
 
         listView=findViewById(R.id.students_list);
@@ -80,15 +81,14 @@ public class StudentsListActivity extends AppCompatActivity {
             convertView = inflater.inflate(R.layout.student_item, null);
 
             StudentHolder holder = new StudentHolder();
-            holder.name= convertView.findViewById(R.id.student_name);
-            holder.secondName = convertView.findViewById(R.id.student_second_name);
-            holder.student_group_id = convertView.findViewById(R.id.student_group_id);
+
+            holder.fullName= convertView.findViewById(R.id.student_full_name);
+            holder.birthDate = convertView.findViewById(R.id.student_birth_date);
 
 
 
-            holder.name.setText(student.getName());
-            holder.secondName.setText(student.getSecondName());
-            holder.student_group_id.setText(String.valueOf(student.getGroupId()));
+            holder.fullName.setText(student.getName()+" "+student.getSecondName()+" "+student.getMiddleName());
+            holder.birthDate.setText(student.getBirthDate());
             convertView.setTag(holder);
 
             return convertView;
@@ -96,9 +96,9 @@ public class StudentsListActivity extends AppCompatActivity {
     }
 
     private static  class StudentHolder {
-        public TextView name;
-        public TextView secondName;
-        public TextView student_group_id;
+        public TextView fullName;
+        public TextView birthDate;
+
     }
 
     @Override
@@ -106,5 +106,14 @@ public class StudentsListActivity extends AppCompatActivity {
         Intent intent1 = new Intent(getApplicationContext(),MainActivity.class);
         startActivity(intent1);
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+
+        students = dbService.findStudentsByGroup(group_id);
+        adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
+        listView.setAdapter(adapter);
+        super.onResume();
     }
 }

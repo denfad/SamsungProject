@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+
+    <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="5dp">
+        android:elevation="5dp"
+        android:paddingBottom="20dp">
 
         <ImageView
             android:id="@+id/header_cover_image"
@@ -23,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-60dp"
             android:background="@drawable/person_rectangle"
-            android:elevation="5dp"
+            android:elevation="10dp"
             android:padding="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_person_black_24dp" />
@@ -33,9 +37,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/header_cover_image"
-            android:background="#ebca0707"
+            android:background="@color/colorPrimary"
             android:elevation="4dp"
-            android:paddingBottom="10dp">
+            android:paddingBottom="20dp">
 
             <ImageButton
                 android:id="@+id/delete_student"
@@ -43,11 +47,11 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_toLeftOf="@+id/student_settings"
+                android:layout_toLeftOf="@+id/student_edit"
                 android:background="@drawable/ic_delete_forever_black_24dp" />
 
             <ImageButton
-                android:id="@+id/student_settings"
+                android:id="@+id/student_edit"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
@@ -84,8 +88,8 @@
                 android:layout_marginTop="5dp"
                 android:text="Дата рождения: 29.04.2003"
                 android:layout_centerHorizontal="true"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
+                android:textColor="@color/colorLightPrimary"
+                android:textSize="20sp"
                 android:layout_below="@+id/student_profile_middle_name"/>
 
             <TextView
@@ -95,8 +99,8 @@
                 android:layout_marginTop="2dp"
                 android:text="Номер группы: 113"
                 android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
+                android:textColor="#FFCDD2"
+                android:textSize="20sp"
                 android:layout_below="@+id/student_profile_birth_date"/>
 
             <TextView
@@ -104,56 +108,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Математика"
+                android:text="Факультет: математика"
                 android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
+                android:textColor="#FFCDD2"
+                android:textSize="20sp"
                 android:layout_below="@+id/student_profile_group_id"/>
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/text4"
+        <LinearLayout
+            android:id="@+id/toolbar_actionbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Одногрупники"
-            android:gravity="center"
-            android:textColor="@color/colorPrimary"
-            android:layout_below="@+id/profile_layout"
-            android:textSize="20sp"
-            android:elevation="2dp"/>
+            android:layout_height="?android:actionBarSize"
+            android:layout_alignParentStart="true"
+            android:background="@color/colorPrimary"
+            android:elevation="5dp"
+            android:orientation="horizontal">
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/student_profile_list"
-            android:layout_below="@+id/text4"/>
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:id="@+id/back"
+                android:background="@drawable/ic_arrow_back_black_24dp"/>
 
-    <LinearLayout
-        android:id="@+id/toolbar_actionbar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:actionBarSize"
-        android:layout_alignParentStart="true"
-        android:background="@color/colorPrimary"
-        android:elevation="5dp"
-        android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/student_profile_id"
+                android:text="1245"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"/>
 
-        <ImageButton
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:id="@+id/back"
-            android:background="@drawable/ic_arrow_back_black_24dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/student_profile_id"
-            android:text="1245"
-            android:textColor="#fff"
-            android:textSize="24sp"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_vertical"/>
-
-    </LinearLayout>
-</RelativeLayout>
