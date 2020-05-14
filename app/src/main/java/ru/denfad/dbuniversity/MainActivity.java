@@ -35,7 +35,8 @@ import ru.denfad.dbuniversity.DAO.DbService;
 import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.Student;
 
-public class                    MainActivity extends AppCompatActivity {
+//TODO: реализовать поиск и фильтрацию
+public class MainActivity extends AppCompatActivity {
 
     public ListView listView;
     public List<Group> groups = new ArrayList<>();

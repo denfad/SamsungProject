@@ -1,38 +1,35 @@
 package ru.denfad.dbuniversity.model;
 
-public class Student {
+public class ServerStudent {
 
     private int student_id;
     private String name;
     private String secondName;
     private String middleName;
     private String birthDate;
-    private int groupId;
+    private Group group;
 
-    public Student(int student_id, String name, String secondName, String middleName, String birthDate, int groupId) {
+
+    public ServerStudent(int student_id, String name, String secondName, String middleName, String birthDate, Group group) {
         this.student_id=student_id;
         this.name = name;
         this.secondName = secondName;
         this.middleName = middleName;
         this.birthDate = birthDate;
-        this.groupId = groupId;
+        this.group = group;
     }
 
-    public Student(String name, String secondName, String middleName, String birthDate, int groupId) {
-        this.student_id=student_id;
+    public ServerStudent(String name, String secondName, String middleName, String birthDate, Group group) {
         this.name = name;
         this.secondName = secondName;
         this.middleName = middleName;
         this.birthDate = birthDate;
-        this.groupId = groupId;
+        this.group = group;
     }
 
-    public Student( String name, String secondName, String middleName, String birthDate) {
-        this.name = name;
-        this.secondName = secondName;
-        this.middleName = middleName;
-        this.birthDate = birthDate;
+    public ServerStudent() {
     }
+
     public int getStudent_id() {
         return student_id;
     }
@@ -73,11 +70,11 @@ public class Student {
         this.birthDate = birthDate;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public Group getGroup() {
+        return this.group;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

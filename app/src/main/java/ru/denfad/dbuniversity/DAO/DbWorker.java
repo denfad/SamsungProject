@@ -13,7 +13,7 @@ import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.Student;
 
 
-class DbWorker extends DbStructure {
+class DbWorker extends DbStructure implements DbConnector{
 
     private SQLiteDatabase mDataBase;
 
@@ -23,7 +23,8 @@ class DbWorker extends DbStructure {
     }
 
     //UPDATE GROUP
-    int updateGroup(int groupId, String faculty){
+    @Override
+    public int updateGroup(int groupId, String faculty){
         ContentValues cv=new ContentValues();
 
         cv.put(GROUP_FACULTY, faculty);
@@ -31,7 +32,8 @@ class DbWorker extends DbStructure {
     }
 
     //UPDATE STUDENTS
-    int updateStudent(int id, String name, String secondName, String middleName, String birthDate, int group_id){
+    @Override
+    public int updateStudent(int id, String name, String secondName, String middleName, String birthDate, int group_id){
         ContentValues cv = new ContentValues();
 
         cv.put(STUDENT_NAME,name);
@@ -43,17 +45,19 @@ class DbWorker extends DbStructure {
     }
 
     //DELETE GROUP
-    void deleteGroup(int group_id){
+    public void deleteGroup(int group_id){
         mDataBase.delete(TABLE_GROUP, GROUP_ID+" =?", new String[]{String.valueOf(group_id)});
     }
 
     //DELETE STUDENT
-    void deleteStudent(int id){
+    @Override
+    public void deleteStudent(int id){
         mDataBase.delete(TABLE_STUDENTS, STUDENT_ID+" =?", new String[]{String.valueOf(id)});
     }
 
     //GET STUDENT BY ID
-    Student selectStudent(int id){
+    @Override
+    public Student selectStudent(int id){
         Cursor mCursor = mDataBase.query(TABLE_STUDENTS, null, STUDENT_ID + " = ?", new String[]{String.valueOf(id)}, null, null, null);
 
         mCursor.moveToFirst();
@@ -66,8 +70,8 @@ class DbWorker extends DbStructure {
         return new Student(studentId,name,secondName,middleName,birthDate,group_id);
     }
 
-
-    Group selectGroup(int id){
+    @Override
+    public Group selectGroup(int id){
         Cursor mCursor = mDataBase.query(TABLE_GROUP, null, GROUP_ID + " = ?", new String[]{String.valueOf(id)}, null, null, null);
 
         mCursor.moveToFirst();
@@ -78,7 +82,8 @@ class DbWorker extends DbStructure {
     }
 
     //ADD NEW STUDENT
-    long insertStudent(String name, String secondName, String middleName, String birthDate, int group_id){
+    @Override
+    public long insertStudent(String name, String secondName, String middleName, String birthDate, int group_id){
         ContentValues cv=new ContentValues();
         cv.put(STUDENT_NAME,name);
         cv.put(STUDENT_SECOND_NAME, secondName);
@@ -89,7 +94,8 @@ class DbWorker extends DbStructure {
     }
 
     //ADD NEW GROUP
-    long insertGroup(int groupId, String faculty) {
+    @Override
+    public long insertGroup(int groupId, String faculty) {
         ContentValues cv=new ContentValues();
         cv.put(GROUP_ID, groupId);
         cv.put(GROUP_FACULTY, faculty);
@@ -97,7 +103,8 @@ class DbWorker extends DbStructure {
     }
 
     //GET LIST ALL OF STUDENTS
-    ArrayList<Student> selectAllStudents(){
+    @Override
+    public ArrayList<Student> selectAllStudents(){
         Cursor mCursor = mDataBase.query(TABLE_STUDENTS, null, null, null, null, null, null);
 
         ArrayList<Student> arr = new ArrayList<Student>();
@@ -118,7 +125,8 @@ class DbWorker extends DbStructure {
 
     }
     //GET LIST OF ALL GROUPS
-    ArrayList<Group> selectAllGroups(){
+    @Override
+    public ArrayList<Group> selectAllGroups(){
         Cursor mCursor = mDataBase.query(TABLE_GROUP, null, null, null, null, null, null);
 
         ArrayList<Group> arr = new ArrayList<Group>();

@@ -27,6 +27,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
     private Intent intent;
     private DbService dbService;
+    private Student student;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
         intent=getIntent();
 
-        final Student student = dbService.getStudentByID(intent.getIntExtra("student_id",Integer.MAX_VALUE));
+        student = dbService.getStudentByID(intent.getIntExtra("student_id",Integer.MAX_VALUE));
 
         updateStudentProfile(student);
 
@@ -151,12 +152,13 @@ public class StudentProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Student student1 =new Student(
+                            student.getStudent_id(),
                             studentName.getText().toString(),
                             studentSecondName.getText().toString(),
                             studentMiddleName.getText().toString(),
                             studentBirthDate.getText().toString(),
                             Integer.parseInt(studentGroupId.getText().toString()));
-                    dbService.addStudent(student1);
+                    dbService.updateStudent(student1);
                     updateStudentProfile(student1);
                     Toast.makeText(getApplicationContext(),"You update student",Toast.LENGTH_SHORT).show();
                     EditStudentDialog.this.cancel();
