@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +29,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     private Intent intent;
     private DbService dbService;
     private Student student;
+    private Group group;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         intent=getIntent();
 
         student = dbService.getStudentByID(intent.getIntExtra("student_id",Integer.MAX_VALUE));
+        group = dbService.getGroupByID(student.getGroupId());
 
         updateStudentProfile(student);
 
@@ -102,6 +105,8 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     private void updateStudentProfile(Student student){
+
+
         TextView studentName = findViewById(R.id.student_profile_name);
         TextView studentMiddleName = findViewById(R.id.student_profile_middle_name);
         TextView studentGroupId = findViewById(R.id.student_profile_group_id);
@@ -115,8 +120,9 @@ public class StudentProfileActivity extends AppCompatActivity {
         studentBirthDate.setText("Дата рождения: "+student.getBirthDate());
         studentId.setText("@"+String.valueOf(student.getStudent_id()));
 
-        Group group = dbService.getGroupByID(student.getGroupId());
+        group = dbService.getGroupByID(student.getGroupId());
         studentFaculty.setText("Факультет: "+group.getFaculty());
+
     }
 
 

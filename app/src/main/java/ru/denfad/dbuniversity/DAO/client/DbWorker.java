@@ -1,4 +1,4 @@
-package ru.denfad.dbuniversity.DAO;
+package ru.denfad.dbuniversity.DAO.client;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,16 +8,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import ru.denfad.dbuniversity.DAO.DbConnector;
 import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.Student;
 
 
-class DbWorker extends DbStructure implements DbConnector{
+public class DbWorker extends DbStructure implements DbConnector {
 
     private SQLiteDatabase mDataBase;
 
-    DbWorker(Context context){
+    public DbWorker(Context context){
         OpenHelper mOpenHelper = new OpenHelper(context);
         mDataBase = mOpenHelper.getWritableDatabase();
     }
@@ -44,9 +46,11 @@ class DbWorker extends DbStructure implements DbConnector{
         return mDataBase.update(TABLE_STUDENTS,cv,STUDENT_ID+" =?", new String[]{String.valueOf(id)});
     }
 
-    //DELETE GROUP
+    //DELETE GROUP (and students)
+    @Override
     public void deleteGroup(int group_id){
         mDataBase.delete(TABLE_GROUP, GROUP_ID+" =?", new String[]{String.valueOf(group_id)});
+        mDataBase.delete(TABLE_STUDENTS, STUDENT_GROUP_ID+" =?", new String[]{String.valueOf(group_id)});
     }
 
     //DELETE STUDENT
@@ -104,10 +108,10 @@ class DbWorker extends DbStructure implements DbConnector{
 
     //GET LIST ALL OF STUDENTS
     @Override
-    public ArrayList<Student> selectAllStudents(){
+    public List<Student> selectAllStudents(){
         Cursor mCursor = mDataBase.query(TABLE_STUDENTS, null, null, null, null, null, null);
 
-        ArrayList<Student> arr = new ArrayList<Student>();
+        List<Student> arr = new ArrayList<>();
         mCursor.moveToFirst();
 
         if (!mCursor.isAfterLast()) {
@@ -126,10 +130,10 @@ class DbWorker extends DbStructure implements DbConnector{
     }
     //GET LIST OF ALL GROUPS
     @Override
-    public ArrayList<Group> selectAllGroups(){
+    public List<Group> selectAllGroups(){
         Cursor mCursor = mDataBase.query(TABLE_GROUP, null, null, null, null, null, null);
 
-        ArrayList<Group> arr = new ArrayList<Group>();
+        List<Group> arr = new ArrayList<>();
         mCursor.moveToFirst();
 
         if (!mCursor.isAfterLast()) {

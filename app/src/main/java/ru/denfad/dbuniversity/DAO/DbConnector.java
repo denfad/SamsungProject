@@ -38,8 +38,8 @@ public interface DbConnector {
     long insertGroup(int groupId, String faculty);
 
     //GET LIST ALL OF STUDENTS
-    ArrayList<Student> selectAllStudents();
+    List<Student> selectAllStudents();
     //GET LIST OF ALL GROUPS
-    ArrayList<Group> selectAllGroups();
+    List<Group> selectAllGroups();
 
 }

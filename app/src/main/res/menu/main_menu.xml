@@ -10,8 +10,13 @@
         yourapp:showAsAction="always|collapseActionView"
         yourapp:actionViewClass="android.widget.SearchView" />
     <item
+        android:id="@+id/action_change_view"
+        android:title="View"
+        android:icon="@drawable/ic_format_align_justify_black_24dp"
+        yourapp:showAsAction="always" />
+    <item
         android:id="@+id/action_filter"
         android:title="Filters"
-        android:icon="@drawable/ic_format_align_justify_black_24dp"
+        android:icon="@drawable/ic_tune_black_24dp"
         yourapp:showAsAction="always" />
 </menu>

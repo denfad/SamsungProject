@@ -1,21 +1,25 @@
 package ru.denfad.dbuniversity.DAO;
 
-import android.content.ContentValues;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import ru.denfad.dbuniversity.DAO.client.DbFilters;
+import ru.denfad.dbuniversity.DAO.client.DbWorker;
+import ru.denfad.dbuniversity.DAO.server.ServerDb;
+import ru.denfad.dbuniversity.DAO.server.ServerDbFilters;
 import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.Student;
 
 public class DbService {
 
-    private DbWorker dbWorker;
-    private DbFilters dbFilters;
+    private ServerDb dbWorker;
+    private ServerDbFilters dbFilters;
 
     public DbService(Context context){
-        dbWorker = new DbWorker(context);
-        dbFilters = new DbFilters(dbWorker);
+        dbWorker = new ServerDb();
+        dbFilters = new ServerDbFilters();
     }
 
     public Student getStudentByID(int id){
@@ -26,11 +30,11 @@ public class DbService {
         return dbWorker.selectGroup(id);
     }
 
-    public ArrayList<Student> getAllStudents(){
+    public List<Student> getAllStudents(){
         return  dbWorker.selectAllStudents();
     }
 
-    public ArrayList<Group> getAllGroups(){
+    public List<Group> getAllGroups(){
         return dbWorker.selectAllGroups();
     }
 
@@ -78,11 +82,11 @@ public class DbService {
         dbWorker.insertGroup(group.getGroupId(),group.getFaculty());
     }
 
-    public ArrayList<Student> findStudentsByGroup(Group group){
+    public List<Student> findStudentsByGroup(Group group){
         return dbFilters.selectStudentsByGroup(group.getGroupId());
     }
 
-    public ArrayList<Student> findStudentsByGroup(int group_id){
+    public List<Student> findStudentsByGroup(int group_id){
         return dbFilters.selectStudentsByGroup(group_id);
     }
 

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayAdapter adapter;
     public DbService dbService;
     public Toolbar toolbar;
-    public boolean activeFilter = true; //true - all groups , false-all students;
+    public boolean activeView = true; //true - all groups , false-all students;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Button button = findViewById(R.id.add);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button addingButton = findViewById(R.id.add);
+        addingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(activeFilter) {
+                if(activeView) {
                     Intent intent = new Intent(getApplicationContext(), AddGroupActivity.class);
                     startActivity(intent);
                 }
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(activeFilter){
+                if(activeView){
                     Intent intent1 = new Intent(getApplicationContext(), StudentsListActivity.class);
                     intent1.putExtra("group_id", groups.get(i).getGroupId());
                     startActivity(intent1);
@@ -225,10 +225,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
-            case R.id.action_filter:
+            case R.id.action_change_view:
                 Toast.makeText(this, "You change view", Toast.LENGTH_SHORT).show();
-                activeFilter= !activeFilter;
-                changeFilter();
+                activeView= !activeView;
+                changeView();
                 break;
             case R.id.action_search:
                 Toast.makeText(this, "You clicked search", Toast.LENGTH_SHORT).show();
@@ -238,12 +238,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void changeFilter(){
-        if(activeFilter){
+    public void changeView(){
+        if(activeView){
             groups=dbService.getAllGroups();
             adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
             listView.setAdapter(adapter);
-            toolbar.setTitle("All roups");
+            toolbar.setTitle("All groups");
             setSupportActionBar(toolbar);
         }
         else{

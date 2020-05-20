@@ -1,26 +1,27 @@
-package ru.denfad.dbuniversity.DAO;
+package ru.denfad.dbuniversity.DAO.client;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.denfad.dbuniversity.model.Student;
 
-class DbFilters extends DbStructure{
+public class DbFilters extends DbStructure {
 
     private DbWorker dbWorker;
     private SQLiteDatabase mDataBase;
 
-    DbFilters(DbWorker dbWorker){
+    public DbFilters(DbWorker dbWorker){
         this.dbWorker=dbWorker;
         mDataBase=this.dbWorker.getDataBase();
     }
 
-    public ArrayList<Student>  selectStudentsByGroup(int group_id){
+    public List<Student> selectStudentsByGroup(int group_id){
         Cursor mCursor = mDataBase.query(TABLE_STUDENTS, null, STUDENT_GROUP_ID + " = ?", new String[]{String.valueOf(group_id)}, null, null, null);
 
-        ArrayList<Student> arr = new ArrayList<Student>();
+        List<Student> arr = new ArrayList<>();
         mCursor.moveToFirst();
 
         if (!mCursor.isAfterLast()) {
