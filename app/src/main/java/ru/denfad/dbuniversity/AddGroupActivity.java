@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import ru.denfad.dbuniversity.DAO.DbService;
 import ru.denfad.dbuniversity.model.Group;
 
+
+//its working!
 public class AddGroupActivity extends AppCompatActivity {
 
     public DbService dbService;
