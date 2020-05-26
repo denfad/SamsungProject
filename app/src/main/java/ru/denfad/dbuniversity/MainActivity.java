@@ -23,9 +23,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayAdapter adapter;
     public DbService dbService;
     public Toolbar toolbar;
+    public BottomSheetBehavior mBottomSheetBehavior;
     public boolean activeView = true; //true - all groups , false-all students;
 
     @Override
@@ -106,6 +110,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior=BottomSheetBehavior.from(bottomSheet);
+
+        RadioGroup groupChangeView = findViewById(R.id.group_change_view);
+        groupChangeView.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.student_view:
+                        activeView=false;
+                        changeView();
+                        break;
+                    case R.id.group_view:
+                        activeView=true;
+                        changeView();
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -225,10 +248,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
-            case R.id.action_change_view:
-                Toast.makeText(this, "You change view", Toast.LENGTH_SHORT).show();
+            case R.id.action_filter:
                 activeView= !activeView;
-                changeView();
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
             case R.id.action_search:
                 Toast.makeText(this, "You clicked search", Toast.LENGTH_SHORT).show();
