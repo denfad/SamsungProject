@@ -20,16 +20,24 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ru.denfad.dbuniversity.DAO.DbService;
+import ru.denfad.dbuniversity.DAO.network.NetworkService;
 import ru.denfad.dbuniversity.model.Group;
+import ru.denfad.dbuniversity.model.ServerStudent;
 import ru.denfad.dbuniversity.model.Student;
 
 public class StudentProfileActivity extends AppCompatActivity {
 
     private Intent intent;
     private DbService dbService;
+    private int studentId;
+    private int groupId;
     private Student student;
-    private Group group;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,11 +46,8 @@ public class StudentProfileActivity extends AppCompatActivity {
         dbService=new DbService(getApplicationContext());
 
         intent=getIntent();
-
-        student = dbService.getStudentByID(intent.getIntExtra("student_id",Integer.MAX_VALUE));
-        group = dbService.getGroupByID(student.getGroupId());
-
-        updateStudentProfile(student);
+        studentId=intent.getIntExtra("student_id",Integer.MAX_VALUE);
+        updateStudentProfile(studentId);
 
 
         ImageButton back = findViewById(R.id.back);
@@ -58,7 +63,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditStudentDialog editStudentDialog = new EditStudentDialog(StudentProfileActivity.this,student);
+                EditStudentDialog editStudentDialog = new EditStudentDialog(StudentProfileActivity.this);
                 editStudentDialog.show();
             }
         });
@@ -74,7 +79,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                 builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // Кнопка ОК
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dbService.deleteStudent(student.getStudent_id());
+                        dbService.deleteStudent(studentId);
                         Intent intent1;
                         switch(intent.getStringExtra("activity")){
                             case "main":
@@ -84,7 +89,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                                 break;
                             case "student_list":
                                 intent1=new Intent(getApplicationContext(),StudentsListActivity.class);
-                                intent1.putExtra("group_id",student.getGroupId());
+                                intent1.putExtra("group_id",groupId);
                                 startActivity(intent1);
                                 break;
                         }
@@ -104,24 +109,39 @@ public class StudentProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void updateStudentProfile(Student student){
+    private void updateStudentProfile(int id){
 
+        NetworkService.getInstance()
+                .getJSONApi()
+                .selectStudent(id)
+                .enqueue(new Callback<ServerStudent>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ServerStudent> call, @NonNull Response<ServerStudent> response) {
+                        ServerStudent studentServer = response.body();
+                        student = cast(studentServer);
+                        TextView studentName = findViewById(R.id.student_profile_name);
+                        TextView studentMiddleName = findViewById(R.id.student_profile_middle_name);
+                        TextView studentGroupId = findViewById(R.id.student_profile_group_id);
+                        TextView studentBirthDate = findViewById(R.id.student_profile_birth_date);
+                        TextView studentFaculty = findViewById(R.id.student_profile_faculty);
+                        TextView studentId = findViewById(R.id.student_profile_id);
 
-        TextView studentName = findViewById(R.id.student_profile_name);
-        TextView studentMiddleName = findViewById(R.id.student_profile_middle_name);
-        TextView studentGroupId = findViewById(R.id.student_profile_group_id);
-        TextView studentBirthDate = findViewById(R.id.student_profile_birth_date);
-        TextView studentFaculty = findViewById(R.id.student_profile_faculty);
-        TextView studentId = findViewById(R.id.student_profile_id);
+                        studentName.setText(studentServer.getName()+" "+student.getSecondName());
+                        studentMiddleName.setText(studentServer.getMiddleName());
+                        studentGroupId.setText("Номер группы: "+String.valueOf(studentServer.getGroup().getGroupId()));
+                        studentBirthDate.setText("Дата рождения: "+studentServer.getBirthDate());
+                        studentId.setText("@"+String.valueOf(studentServer.getStudent_id()));
+                        studentFaculty.setText("Факультет: "+studentServer.getGroup().getFaculty());
+                        groupId = studentServer.getGroup().getGroupId();
+                    }
 
-        studentName.setText(student.getName()+" "+student.getSecondName());
-        studentMiddleName.setText(student.getMiddleName());
-        studentGroupId.setText("Номер группы: "+String.valueOf(student.getGroupId()));
-        studentBirthDate.setText("Дата рождения: "+student.getBirthDate());
-        studentId.setText("@"+String.valueOf(student.getStudent_id()));
+                    @Override
+                    public void onFailure(@NonNull Call<ServerStudent> call, @NonNull Throwable t) {
+                        Log.e("groups", "fail");
+                        t.printStackTrace();
+                    }
+                });
 
-        group = dbService.getGroupByID(student.getGroupId());
-        studentFaculty.setText("Факультет: "+group.getFaculty());
 
     }
 
@@ -132,7 +152,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
         DbService dbService;
 
-        public EditStudentDialog(@NonNull final Context context, final Student student) {
+        public EditStudentDialog(@NonNull final Context context) {
             super(context);
 
             dbService = new DbService(context);
@@ -165,7 +185,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                             studentBirthDate.getText().toString(),
                             Integer.parseInt(studentGroupId.getText().toString()));
                     dbService.updateStudent(student1);
-                    updateStudentProfile(student1);
+                    updateStudentProfile(studentId);
                     Toast.makeText(getApplicationContext(),"You update student",Toast.LENGTH_SHORT).show();
                     EditStudentDialog.this.cancel();
 
@@ -182,4 +202,13 @@ public class StudentProfileActivity extends AppCompatActivity {
         }
     }
 
+    private Student cast(ServerStudent serverStudent){
+        return new Student(
+                serverStudent.getStudent_id(),
+                serverStudent.getName(),
+                serverStudent.getSecondName(),
+                serverStudent.getMiddleName(),
+                serverStudent.getBirthDate(),
+                serverStudent.getGroup().getGroupId());
+    }
 }

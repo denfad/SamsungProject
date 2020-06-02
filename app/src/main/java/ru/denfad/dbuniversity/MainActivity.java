@@ -24,13 +24,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,16 +68,19 @@ public class MainActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         if(Objects.equals(intent.getStringExtra("active_list"), "students")){
-            students=dbService.getAllStudents();
             adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
-            listView.setAdapter(adapter);
+            dbService.getAllStudents(listView,adapter);
         }
         else{
-            groups=dbService.getAllGroups();
             adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
-            listView.setAdapter(adapter);
+            dbService.getAllGroups(listView,adapter);
+
         }
 
+        Spinner sortSpinner = findViewById(R.id.spinner);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+                R.layout.spiner_item, R.id.sort_text, Arrays.asList(getResources().getStringArray(R.array.sort_types)));
+        sortSpinner.setAdapter(spinnerAdapter);
 
 
         Button addingButton = findViewById(R.id.add);
@@ -129,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        List<String> s = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.sort_types)));
     }
 
 
@@ -156,9 +164,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if(dbService.deleteGroup(group.getGroupId())){
                         Toast.makeText(getApplicationContext(),"Delete group",Toast.LENGTH_SHORT).show();
-                        groups=dbService.getAllGroups();
                         adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
-                        listView.setAdapter(adapter);
+                        dbService.getAllGroups(listView, adapter);
                     }
                     else  {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -169,9 +176,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dbService.deleteGroupAnyway(group.getGroupId());
-                                groups=dbService.getAllGroups();
                                 adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
-                                listView.setAdapter(adapter);
+                                dbService.getAllGroups(listView, adapter);
                                 dialog.dismiss(); // Отпускает диалоговое окно
                             }
                         });
@@ -262,16 +268,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeView(){
         if(activeView){
-            groups=dbService.getAllGroups();
             adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
-            listView.setAdapter(adapter);
+            dbService.getAllGroups(listView, adapter);
             toolbar.setTitle("All groups");
             setSupportActionBar(toolbar);
         }
         else{
-            students=dbService.getAllStudents();
             adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
-            listView.setAdapter(adapter);
+            dbService.getAllStudents(listView,adapter);
             toolbar.setTitle("All students");
             setSupportActionBar(toolbar);
         }

@@ -1,5 +1,7 @@
 package ru.denfad.dbuniversity.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Student {
 
     private int student_id;

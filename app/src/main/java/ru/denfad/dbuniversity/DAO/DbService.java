@@ -1,15 +1,25 @@
 package ru.denfad.dbuniversity.DAO;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ru.denfad.dbuniversity.DAO.client.DbFilters;
 import ru.denfad.dbuniversity.DAO.client.DbWorker;
+import ru.denfad.dbuniversity.DAO.network.NetworkService;
 import ru.denfad.dbuniversity.DAO.server.ServerDb;
 import ru.denfad.dbuniversity.DAO.server.ServerDbFilters;
 import ru.denfad.dbuniversity.model.Group;
+import ru.denfad.dbuniversity.model.ServerStudent;
 import ru.denfad.dbuniversity.model.Student;
 
 public class DbService {
@@ -30,32 +40,106 @@ public class DbService {
         return dbWorker.selectGroup(id);
     }
 
-    public List<Student> getAllStudents(){
-        return  dbWorker.selectAllStudents();
+    public void getAllStudents(final ListView list, final ArrayAdapter adapter){
+        NetworkService.getInstance()
+                .getJSONApi()
+                .getAllStudents()
+                .enqueue(new Callback<List<ServerStudent>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<ServerStudent>> call, @NonNull Response<List<ServerStudent>> response) {
+                        List<Student> students = cast(response.body());
+                        adapter.clear();
+                        adapter.addAll(students);
+                        list.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<ServerStudent>> call, @NonNull Throwable t) {
+                        Log.e("groups", "fail");
+                        t.printStackTrace();
+                    }
+                });
+
     }
 
-    public List<Group> getAllGroups(){
-        return dbWorker.selectAllGroups();
+    public void getAllGroups(final ListView list, final ArrayAdapter adapter){
+        NetworkService.getInstance()
+                .getJSONApi()
+                .getAllGroups()
+                .enqueue(new Callback<List<Group>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<Group>> call, @NonNull Response<List<Group>> response) {
+                        List<Group> groups = response.body();
+                        adapter.clear();
+                        adapter.addAll(groups);
+                        list.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<Group>> call, @NonNull Throwable t) {
+                        Log.e("groups", "fail");
+                        t.printStackTrace();
+                    }
+                });
+
     }
+
 
     public void deleteStudent(int id){
-        dbWorker.deleteStudent(id);
+        NetworkService.getInstance()
+                .getJSONApi()
+                .deleteStudent(id)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
     }
 
     public void deleteStudent(Student student){
-        dbWorker.deleteStudent(student.getStudent_id());
+        NetworkService.getInstance()
+                .getJSONApi()
+                .deleteStudent(student.getStudent_id())
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("response", response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
     }
 
     public boolean deleteGroup(int id){
         if(dbFilters.checkIsEmptyGroup(id)){
-            dbWorker.deleteGroup(id);
+            deleteGroupAnyway(id);
             return true;
         }
         else return  false;
     }
 
     public void deleteGroupAnyway(int id){
-        dbWorker.deleteGroup(id);
+        NetworkService.getInstance()
+                .getJSONApi()
+                .deleteGroup(id)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
     }
 
     public boolean deleteGroup(Group group){
@@ -74,21 +158,78 @@ public class DbService {
         dbWorker.updateGroup(group.getGroupId(),group.getFaculty());
     }
 
-    public void addStudent(Student student){
-        dbWorker.insertStudent(student.getName(),student.getSecondName(),student.getMiddleName(),student.getBirthDate(),student.getGroupId());
+    public void addStudent(Student student) {
+        NetworkService.getInstance()
+                .getJSONApi()
+                .addStudent(student.getGroupId(),student)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("response", response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
     }
 
     public void addGroup(Group group){
-        dbWorker.insertGroup(group.getGroupId(),group.getFaculty());
+        NetworkService.getInstance()
+                .getJSONApi()
+                .addGroup(group)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("response", response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
     }
 
     public List<Student> findStudentsByGroup(Group group){
         return dbFilters.selectStudentsByGroup(group.getGroupId());
     }
 
-    public List<Student> findStudentsByGroup(int group_id){
-        return dbFilters.selectStudentsByGroup(group_id);
+    public void findStudentsByGroup(final ListView list, final ArrayAdapter adapter, int group_id){
+        NetworkService.getInstance()
+                .getJSONApi()
+                .selectStudentByGroup(group_id)
+                .enqueue(new Callback<List<ServerStudent>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<ServerStudent>> call, @NonNull Response<List<ServerStudent>> response) {
+                        List<Student> students = cast(response.body());
+                        adapter.clear();
+                        adapter.addAll(students);
+                        list.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<ServerStudent>> call, @NonNull Throwable t) {
+                        Log.e("groups", "fail");
+                        t.printStackTrace();
+                    }
+                });
+
     }
 
 
+    private List<Student> cast(List<ServerStudent> serverStudents){
+        List<Student> students = new ArrayList<>();
+        for(ServerStudent serverStudent:serverStudents) {
+            students.add(new Student(
+                    serverStudent.getStudent_id(),
+                    serverStudent.getName(),
+                    serverStudent.getSecondName(),
+                    serverStudent.getMiddleName(),
+                    serverStudent.getBirthDate(),
+                    serverStudent.getGroup().getGroupId()));
+        }
+        return students;
+    }
 }

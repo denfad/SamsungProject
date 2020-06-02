@@ -37,11 +37,11 @@ public class StudentsListActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         dbService=new DbService(getApplicationContext());
         group_id = intent.getIntExtra("group_id",Integer.MAX_VALUE);
-        students = dbService.findStudentsByGroup(group_id);
-        adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
 
         listView=findViewById(R.id.students_list);
-        listView.setAdapter(adapter);
+
+        adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
+        dbService.findStudentsByGroup(listView,adapter,group_id);
 
         Button button = findViewById(R.id.add);
         button.setOnClickListener(new View.OnClickListener() {
@@ -110,10 +110,8 @@ public class StudentsListActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
-        students = dbService.findStudentsByGroup(group_id);
         adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
-        listView.setAdapter(adapter);
+        dbService.findStudentsByGroup(listView,adapter,group_id);
         super.onResume();
     }
 }

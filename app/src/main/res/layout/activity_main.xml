@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <ListView
             android:id="@+id/models_list"
             android:layout_width="match_parent"
@@ -37,57 +37,5 @@
             android:elevation="5dp"/>
     </RelativeLayout>
 
-
-        <LinearLayout
-            android:id="@+id/bottom_sheet"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/sheet_rectangle"
-            android:orientation="vertical"
-            app:behavior_hideable="true"
-            android:elevation="5dp"
-            app:behavior_peekHeight="0dp"
-            app:layout_behavior="@string/bottom_sheet_behavior">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:layout_marginLeft="30dp"
-                android:textColor="@color/white"
-                android:layout_marginBottom="5dp"
-                android:text="Фильтры"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Вид"
-                android:textSize="20sp"
-                android:layout_marginLeft="30dp"
-                android:textColor="@color/white"/>
-            <RadioGroup
-                android:id="@+id/group_change_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
-                android:layout_marginLeft="30dp">
-
-                <RadioButton
-                    android:id="@+id/student_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Студенты"
-                    android:textSize="20sp"/>
-
-                <RadioButton
-                    android:id="@+id/group_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Группы"
-                    android:textSize="20sp"/>
-            </RadioGroup>
-
-        </LinearLayout>
+    <include layout="@layout/bottom_sheet"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

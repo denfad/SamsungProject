@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DBUniversity</string>
+
+    <string-array name="sort_types">
+        <item>Без сортировки</item>
+        <item>Сортировка по фамилии</item>
+        <item>Сортировка по номеру группы</item>
+    </string-array>
 </resources>
