@@ -40,10 +40,10 @@ public class DbService {
         return dbWorker.selectGroup(id);
     }
 
-    public void getAllStudents(final ListView list, final ArrayAdapter adapter){
+    public void getAllStudents(final ListView list, final ArrayAdapter adapter, String type){
         NetworkService.getInstance()
                 .getJSONApi()
-                .getAllStudents()
+                .getAllStudents(type)
                 .enqueue(new Callback<List<ServerStudent>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<ServerStudent>> call, @NonNull Response<List<ServerStudent>> response) {
@@ -218,7 +218,25 @@ public class DbService {
 
     }
 
+    public void searchStudents(final ListView listView, final ArrayAdapter adapter, String query){
+        NetworkService.getInstance()
+                .getJSONApi()
+                .searchStudent(query)
+                .enqueue(new Callback<List<ServerStudent>>() {
+                    @Override
+                    public void onResponse(Call<List<ServerStudent>> call, Response<List<ServerStudent>> response) {
+                        List<Student> students = cast(response.body());
+                        adapter.clear();
+                        adapter.addAll(students);
+                        listView.setAdapter(adapter);
+                    }
 
+                    @Override
+                    public void onFailure(Call<List<ServerStudent>> call, Throwable t) {
+
+                    }
+                });
+    }
     private List<Student> cast(List<ServerStudent> serverStudents){
         List<Student> students = new ArrayList<>();
         for(ServerStudent serverStudent:serverStudents) {

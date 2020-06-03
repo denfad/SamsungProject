@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +43,6 @@ import ru.denfad.dbuniversity.DAO.DbService;
 import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.Student;
 
-//TODO: реализовать поиск и фильтрацию
 public class MainActivity extends AppCompatActivity {
 
     public ListView listView;
@@ -50,9 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayAdapter adapter;
     public DbService dbService;
+    public Spinner sortSpinner;
     public Toolbar toolbar;
     public BottomSheetBehavior mBottomSheetBehavior;
     public boolean activeView = true; //true - all groups , false-all students;
+    public String activeSortType = null;
+    public String[] sortTypes = new String[]{null,"name","groupid"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,20 +71,31 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.models_list);
 
         final Intent intent = getIntent();
-        if(Objects.equals(intent.getStringExtra("active_list"), "students")){
-            adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
-            dbService.getAllStudents(listView,adapter);
-        }
-        else{
-            adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
-            dbService.getAllGroups(listView,adapter);
+        if(Objects.equals(intent.getStringExtra("active_list"), "students")) activeView = false;
+        Log.e("active view", String.valueOf(activeView));
 
-        }
 
-        Spinner sortSpinner = findViewById(R.id.spinner);
+        sortSpinner = findViewById(R.id.spinner);
+        changeView();
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
                 R.layout.spiner_item, R.id.sort_text, Arrays.asList(getResources().getStringArray(R.array.sort_types)));
         sortSpinner.setAdapter(spinnerAdapter);
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!activeView) {
+                    Log.e("Set filters", "Set filters");
+                    activeSortType = sortTypes[position];
+                    adapter = new StudentsAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, students);
+                    dbService.getAllStudents(listView, adapter, activeSortType);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                changeView();
+            }
+        });
 
 
         Button addingButton = findViewById(R.id.add);
@@ -120,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         mBottomSheetBehavior=BottomSheetBehavior.from(bottomSheet);
 
         RadioGroup groupChangeView = findViewById(R.id.group_change_view);
+        groupChangeView.check(R.id.group_view);
         groupChangeView.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -248,6 +264,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
+        MenuItem mSearch = menu.findItem(R.id.action_search);
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setQueryHint("Search");
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                toolbar.setTitle("Найденные студенты");
+                dbService.searchStudents(listView,new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students),query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                toolbar.setTitle("Найденные студенты");
+                dbService.searchStudents(listView,new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students),newText);
+                return true;
+            }
+        });
         return true;
     }
 
@@ -258,9 +291,6 @@ public class MainActivity extends AppCompatActivity {
                 activeView= !activeView;
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
-            case R.id.action_search:
-                Toast.makeText(this, "You clicked search", Toast.LENGTH_SHORT).show();
-                break;
         }
         return true;
     }
@@ -268,16 +298,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeView(){
         if(activeView){
+            sortSpinner.setVisibility(Spinner.INVISIBLE);
             adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
             dbService.getAllGroups(listView, adapter);
             toolbar.setTitle("All groups");
             setSupportActionBar(toolbar);
         }
         else{
+            sortSpinner.setVisibility(Spinner.VISIBLE);
             adapter=new StudentsAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,students);
-            dbService.getAllStudents(listView,adapter);
+            dbService.getAllStudents(listView,adapter,activeSortType);
             toolbar.setTitle("All students");
             setSupportActionBar(toolbar);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+       System.exit(0);
+    }
 }
+

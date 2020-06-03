@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -60,6 +61,15 @@ public class StudentsListActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(getApplicationContext(), StudentProfileActivity.class);
                 intent1.putExtra("activity","student_list");
                 intent1.putExtra("student_id", students.get(i).getStudent_id());
+                startActivity(intent1);
+            }
+        });
+
+        ImageButton back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(intent1);
             }
         });

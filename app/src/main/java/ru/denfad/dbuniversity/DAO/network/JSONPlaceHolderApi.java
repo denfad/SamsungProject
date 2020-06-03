@@ -6,8 +6,10 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.ServerStudent;
 import ru.denfad.dbuniversity.model.Student;
@@ -33,7 +35,7 @@ public interface JSONPlaceHolderApi {
     public Call<String> addGroup(@Body Group group);
 
     @GET("/student/")
-    public Call<List<ServerStudent>> getAllStudents();
+    public Call<List<ServerStudent>> getAllStudents(@Query("sortType") String type);
 
     @GET("/group/")
     public Call<List<Group>> getAllGroups();
@@ -44,4 +46,6 @@ public interface JSONPlaceHolderApi {
     @GET("/group/isempty/{id}")
     public Call<Boolean> checkIsEmptyGroup(@Path("id") int groupId);
 
+    @POST("/student/search")
+    public Call<List<ServerStudent>> searchStudent(@Body String query);
 }

@@ -47,28 +47,28 @@
             android:gravity="center"
             android:textColor="@android:color/black" />
 
-        <EditText
-            android:id="@+id/edit_birth_date"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Дата рождения"
-            android:gravity="center"
-            android:textColor="@android:color/black" />
+    <EditText
+        android:id="@+id/edit_birth_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="5dp"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Дата рождения"
+        android:inputType="date"
+        android:textColor="@android:color/black" />
 
-        <EditText
-            android:layout_gravity="center"
-            android:id="@+id/edit_group_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:inputType="textPersonName"
-            android:hint="Номер группы"
-            android:gravity="center"
-            android:textColor="@android:color/black" />
+    <EditText
+        android:id="@+id/edit_group_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="5dp"
+        android:gravity="center"
+        android:hint="Номер группы"
+        android:inputType="number"
+        android:textColor="@android:color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
