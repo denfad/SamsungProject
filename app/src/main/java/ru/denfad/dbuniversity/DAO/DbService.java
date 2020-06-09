@@ -151,7 +151,20 @@ public class DbService {
     }
 
     public void updateStudent(Student student){
-        dbWorker.updateStudent(student.getStudent_id(),student.getName(),student.getSecondName(),student.getMiddleName(),student.getBirthDate(),student.getGroupId());
+        NetworkService.getInstance()
+                .getJSONApi()
+                .updateStudent(cast(student))
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("response", response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
     }
 
     public void updateGroup(Group group){
@@ -249,5 +262,15 @@ public class DbService {
                     serverStudent.getGroup().getGroupId()));
         }
         return students;
+    }
+
+    private ServerStudent cast(Student student){
+        return new ServerStudent(
+                student.getStudent_id(),
+                student.getName(),
+                student.getSecondName(),
+                student.getMiddleName(),
+                student.getBirthDate(),
+                new Group(student.getGroupId(),null));
     }
 }

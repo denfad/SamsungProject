@@ -31,6 +31,9 @@ public interface JSONPlaceHolderApi {
     @PUT("/student/{id}")
     public Call<String> addStudent(@Path("id") int groupId, @Body Student s);
 
+    @PUT("/student/update")
+    public Call<String> updateStudent(@Body ServerStudent s);
+
     @PUT("/group/")
     public Call<String> addGroup(@Body Group group);
 
