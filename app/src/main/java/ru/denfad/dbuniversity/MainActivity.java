@@ -178,35 +178,8 @@ public class MainActivity extends AppCompatActivity {
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(dbService.deleteGroup(group.getGroupId())){
-                        Toast.makeText(getApplicationContext(),"Delete group",Toast.LENGTH_SHORT).show();
-                        adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
-                        dbService.getAllGroups(listView, adapter);
-                    }
-                    else  {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Удаление группы");
-                        builder.setMessage("Группа не пустая, вы правда хотите удалить ее со студентами?");
-                        builder.setCancelable(true);
-                        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // Кнопка ОК
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dbService.deleteGroupAnyway(group.getGroupId());
-                                adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
-                                dbService.getAllGroups(listView, adapter);
-                                dialog.dismiss(); // Отпускает диалоговое окно
-                            }
-                        });
-                        builder.setNegativeButton("Отмена",new DialogInterface.OnClickListener() { // Кнопка ОК
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss(); // Отпускает диалоговое окно
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                    }
-
+                    adapter=new GroupAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,groups);
+                    dbService.deleteGroup(group.getGroupId(),adapter,listView, MainActivity.this);
                 }
             });
 

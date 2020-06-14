@@ -1,11 +1,14 @@
 package ru.denfad.dbuniversity.DAO;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +21,7 @@ import ru.denfad.dbuniversity.DAO.client.DbWorker;
 import ru.denfad.dbuniversity.DAO.network.NetworkService;
 import ru.denfad.dbuniversity.DAO.server.ServerDb;
 import ru.denfad.dbuniversity.DAO.server.ServerDbFilters;
+import ru.denfad.dbuniversity.MainActivity;
 import ru.denfad.dbuniversity.model.Group;
 import ru.denfad.dbuniversity.model.ServerStudent;
 import ru.denfad.dbuniversity.model.Student;
@@ -118,12 +122,48 @@ public class DbService {
                 });
     }
 
-    public boolean deleteGroup(int id){
-        if(dbFilters.checkIsEmptyGroup(id)){
-            deleteGroupAnyway(id);
-            return true;
-        }
-        else return  false;
+    public void deleteGroup(final int id, final  ArrayAdapter adapter, final ListView listView, final Context context){
+
+        NetworkService.getInstance()
+                .getJSONApi()
+                .checkIsEmptyGroup(id)
+                .enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if(response.body()){
+                            Toast.makeText(context,"Delete group",Toast.LENGTH_SHORT).show();
+                            deleteGroupAnyway(id);
+                            getAllGroups(listView, adapter);
+                        }
+                        else  {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setTitle("Удаление группы");
+                            builder.setMessage("Группа не пустая, вы правда хотите удалить ее со студентами?");
+                            builder.setCancelable(true);
+                            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // Кнопка ОК
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deleteGroupAnyway(id);
+                                    getAllGroups(listView,adapter);
+                                    dialog.dismiss(); // Отпускает диалоговое окно
+                                }
+                            });
+                            builder.setNegativeButton("Отмена",new DialogInterface.OnClickListener() { // Кнопка ОК
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss(); // Отпускает диалоговое окно
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+
+                    }
+                });
     }
 
     public void deleteGroupAnyway(int id){
